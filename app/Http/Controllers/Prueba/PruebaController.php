@@ -7,6 +7,11 @@ use App\Http\Controllers\Controller;
 
 class PruebaController extends Controller
 {
+    public function data(Request $request) {
+        // \sleep(20);
+        return $request->all();
+    }
+
     public function index() {
         $data = array([
             'nombre' => 'Roberto',

@@ -8,7 +8,14 @@
     <link rel="stylesheet" href="{{ mix('/css/app.css') }}"></link>
 </head>
 <body>
-    
+    <!-- <form action="data" method="post">
+        @csrf
+        <input type="text" name="nombre" class="form-control">
+        <input type="text" name="apellidos" class="form-control">
+        <input type="text" name="sexo" class="form-control">
+        <button class="btn btn-primary">Enviar</button>
+    </form> -->
+
     <main id="app">
         <example-component data="{{ json_encode($data) }}"></example-component>
     </main>

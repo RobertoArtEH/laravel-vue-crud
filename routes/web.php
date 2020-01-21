@@ -23,3 +23,4 @@
 // ]);
 
 Route::get('/', 'Prueba\PruebaController@index');
+Route::post('/data', 'Prueba\PruebaController@data');

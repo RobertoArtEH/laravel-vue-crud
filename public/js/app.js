@@ -1971,15 +1971,58 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data'],
   mounted: function mounted() {
-    this.lista = JSON.parse(this.data);
+    this.list = JSON.parse(this.data);
   },
   data: function data() {
     return {
-      lista: null,
+      list: null,
+      isEdit: false,
       alumno: {
+        id: null,
         nombre: null,
         apellidos: null,
         sexo: null
@@ -1990,13 +2033,44 @@ __webpack_require__.r(__webpack_exports__);
     saveData: function saveData() {
       var self = this;
       axios.post('/data', this.alumno).then(function (response) {
-        self.lista.push(response.data);
+        console.log(response);
+        self.list.push(response.data);
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    editData: function editData(elemento) {
-      console.log(elemento);
+    editData: function editData(el, idx) {
+      this.alumno.id = idx;
+      this.alumno.nombre = el.nombre;
+      this.alumno.apellidos = el.apellidos;
+      this.alumno.sexo = el.sexo;
+      this.isEdit = true;
+      console.log(this.list);
+    },
+    updateTable: function updateTable() {
+      var id = this.alumno.id;
+      this.list[id].nombre = this.alumno.nombre;
+      this.list[id].apellidos = this.alumno.apellidos;
+      this.list[id].sexo = this.alumno.sexo;
+      this.updateData();
+    },
+    deleteData: function deleteData(el, idx) {
+      this.list.splice(idx, 1);
+    },
+    updateData: function updateData() {
+      var _this = this;
+
+      axios.post("/data", {
+        alumno: this.alumno
+      }).then(function (response) {
+        _this.alumno.nombre = '';
+        _this.alumno.apellidos = '';
+        _this.alumno.sexo = '';
+        _this.isEdit = false;
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });
@@ -6546,7 +6620,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.M {\n    background: #0984e3;\n}\n.F {\n    background: #fd79a8;\n}\n", ""]);
+exports.push([module.i, "\n.M {\n    background: #0984e3;\n    color: #fff;\n}\n.F {\n    background: #fd79a8;\n    color: #fff;\n}\n", ""]);
 
 // exports
 
@@ -38018,123 +38092,208 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "container" }, [
+  return _c("div", { staticClass: "container mt-3" }, [
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-8" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Example Component")
+          _c("div", { staticClass: "card-header bg-success text-center" }, [
+            _vm._v("Async Form - Vue")
           ]),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "card-body" },
-            [
-              _c("form", [
-                _c("div", { staticClass: "form-group" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.alumno.nombre,
-                        expression: "alumno.nombre"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text", name: "nombre" },
-                    domProps: { value: _vm.alumno.nombre },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+          _c("div", { staticClass: "card-body" }, [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col" }, [
+                _c("form", [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "nombre" } }, [
+                      _vm._v("Nombres")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.alumno.nombre,
+                          expression: "alumno.nombre"
                         }
-                        _vm.$set(_vm.alumno, "nombre", $event.target.value)
-                      }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.alumno.apellidos,
-                        expression: "alumno.apellidos"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text", name: "apellidos" },
-                    domProps: { value: _vm.alumno.apellidos },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "nombre" },
+                      domProps: { value: _vm.alumno.nombre },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.alumno, "nombre", $event.target.value)
                         }
-                        _vm.$set(_vm.alumno, "apellidos", $event.target.value)
                       }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "form-group" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.alumno.sexo,
-                        expression: "alumno.sexo"
-                      }
-                    ],
-                    staticClass: "form-control",
-                    attrs: { type: "text", name: "sexo" },
-                    domProps: { value: _vm.alumno.sexo },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "apellidos" } }, [
+                      _vm._v("Apellidos")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.alumno.apellidos,
+                          expression: "alumno.apellidos"
                         }
-                        _vm.$set(_vm.alumno, "sexo", $event.target.value)
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "apellidos" },
+                      domProps: { value: _vm.alumno.apellidos },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.alumno, "apellidos", $event.target.value)
+                        }
                       }
-                    }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("input", {
-                  staticClass: "btn btn-block btn-primary mb-2",
-                  attrs: { type: "button", value: "Enviar" },
-                  on: { click: _vm.saveData }
-                })
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "nombre" } }, [
+                      _vm._v("Sexo (M/F)")
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.alumno.sexo,
+                          expression: "alumno.sexo"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", name: "sexo" },
+                      domProps: { value: _vm.alumno.sexo },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.alumno, "sexo", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  this.isEdit == false
+                    ? _c("input", {
+                        staticClass: "btn btn-block btn-success mb-2",
+                        attrs: { type: "button", value: "Enviar" },
+                        on: { click: _vm.saveData }
+                      })
+                    : _c("input", {
+                        staticClass: "btn btn-block btn-info text-light mb-2",
+                        attrs: { type: "button", value: "Editar" },
+                        on: { click: _vm.updateTable }
+                      })
+                ])
               ]),
               _vm._v(" "),
-              _vm._l(_vm.lista, function(elemento) {
-                return _c("ul", { key: elemento.id }, [
+              _c("div", { staticClass: "col" }, [
+                _c("table", { staticClass: "table" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
                   _c(
-                    "li",
-                    {
-                      class: elemento.sexo,
-                      on: {
-                        click: function($event) {
-                          return _vm.editData(elemento)
-                        }
-                      }
-                    },
-                    [_vm._v(_vm._s(elemento.nombre))]
+                    "tbody",
+                    _vm._l(_vm.list, function(el, idx) {
+                      return _c("tr", { key: el.id }, [
+                        _c(
+                          "th",
+                          {
+                            class: el.sexo,
+                            on: {
+                              click: function($event) {
+                                return _vm.editData(el, idx)
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                            " +
+                                _vm._s(el.nombre) +
+                                "\n                                        "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            class: el.sexo,
+                            on: {
+                              click: function($event) {
+                                return _vm.editData(el, idx)
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                                            " +
+                                _vm._s(el.apellidos) +
+                                "\n                                        "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "th",
+                          {
+                            class: el.sexo,
+                            on: {
+                              click: function($event) {
+                                return _vm.deleteData(el, idx)
+                              }
+                            }
+                          },
+                          [
+                            _c("input", {
+                              staticClass: "btn btn-danger",
+                              attrs: { type: "button", value: "Borrar" }
+                            })
+                          ]
+                        )
+                      ])
+                    }),
+                    0
                   )
                 ])
-              })
-            ],
-            2
-          )
+              ])
+            ])
+          ])
         ])
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Apellidos")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Acción")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

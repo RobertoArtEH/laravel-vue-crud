@@ -24,3 +24,5 @@
 
 Route::get('/', 'Prueba\PruebaController@index');
 Route::post('/data', 'Prueba\PruebaController@data');
+Route::delete('/delete/{id}', 'Prueba\PruebaController@delete')->name('delete');
+Route::put('/update/{id}', 'Prueba\PruebaController@update')->name('update');

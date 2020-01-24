@@ -128,6 +128,10 @@
             },
             deleteData: function(el, idx) {
                 this.list.splice(idx, 1);
+                this.alumno.nombre = '';
+                this.alumno.apellidos = '';
+                this.alumno.sexo = '';
+                this.isEdit = false;
             },
             updateData: function() {
                 axios.post(`/data`, { alumno: this.alumno})

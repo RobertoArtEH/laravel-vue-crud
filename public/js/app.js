@@ -2056,6 +2056,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     deleteData: function deleteData(el, idx) {
       this.list.splice(idx, 1);
+      this.alumno.nombre = '';
+      this.alumno.apellidos = '';
+      this.alumno.sexo = '';
+      this.isEdit = false;
     },
     updateData: function updateData() {
       var _this = this;

@@ -8,21 +8,28 @@ use App\Http\Controllers\Controller;
 class PruebaController extends Controller
 {
     public function data(Request $request) {
+        return $request->all();
+    }
+
+    public function add(Request $request) {
         $nombre = $request->input('nombre');
         $apellidos = $request->input('apellidos');
         $sexo = $request->input('sexo');
         
-        $alumnos = ['nombre' => $nombre, 'apellidos' => $apellidos, 'sexo' => $sexo];
+        $alumno = ['nombre' => $nombre, 'apellidos' => $apellidos, 'sexo' => $sexo];
         
-        $request->session()->push('lista.alumnos', $alumnos);
+        $request->session()->push('lista.alumnos', $alumno);
         
         return back()->with(['data' => $request->all()]);
     }
-    
+
     public function delete(Request $request, $id) {
         $index = $id - 1;
         
-        session()->forget('lista.alumnos.'.$index);
+        $list = session()->get('lista.alumnos');
+        
+        array_splice($list, $index, 1);        
+        session()->put('lista.alumnos', $list);
 
         return back()->with(['data' => $request->all()]);
     }

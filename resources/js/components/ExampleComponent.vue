@@ -97,13 +97,18 @@
             }
         },
         methods: {
+            cleanInput: function() {
+                this.alumno.nombre = '';
+                this.alumno.apellidos = '';
+                this.alumno.sexo = '';
+            },
             saveData: function() {
                 let self = this;
 
                 axios.post('/data', this.alumno)
                     .then(response => {
-                        console.log(response);
                         self.list.push(response.data);
+                        self.cleanInput();
                     })
                     .catch(error => {
                         console.log(error);
@@ -115,7 +120,6 @@
                 this.alumno.apellidos = el.apellidos;
                 this.alumno.sexo = el.sexo;
                 this.isEdit = true;
-                console.log(this.list)
             },
             updateTable: function() {
                 let id = this.alumno.id;
@@ -128,17 +132,13 @@
             },
             deleteData: function(el, idx) {
                 this.list.splice(idx, 1);
-                this.alumno.nombre = '';
-                this.alumno.apellidos = '';
-                this.alumno.sexo = '';
+                this.cleanInput();
                 this.isEdit = false;
             },
             updateData: function() {
                 axios.post(`/data`, { alumno: this.alumno})
                     .then(response=> {
-                        this.alumno.nombre = '';
-                        this.alumno.apellidos = '';
-                        this.alumno.sexo = '';
+                        this.cleanInput();
                         this.isEdit = false;
                         console.log(response);
                     })

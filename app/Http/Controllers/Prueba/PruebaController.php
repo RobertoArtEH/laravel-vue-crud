@@ -7,17 +7,48 @@ use App\Http\Controllers\Controller;
 
 class PruebaController extends Controller
 {
+    public function index() {
+        $data = \App\Models\Person::all()->toArray();
+
+        return view('folder.test', ['data' => $data]);
+    }
+
     public function data(Request $request) {
-        return $request->all();
+        $request->validate([
+            "nombre"=>"required|string",
+            "apellidos"=>"required|string",
+            "sexo"=>"required|string",
+            "edad"=>"required|integer"
+        ]);
+
+        $person = new \App\Models\Person();
+        $person->nombre = $request->nombre;
+        $person->apellidos = $request->apellidos;
+        $person->sexo = $request->sexo;
+        $person->edad = 19;
+
+        // if($request->ajax())
+
+        if($person->save())
+            return back();
+
+        return response()->json(null, 422);
     }
 
     public function add(Request $request) {
+        $request->validate([
+            "nombre"=>"required|string",
+            "apellidos"=>"required|string",
+            "sexo"=>"required|string",
+            "edad"=>"required|integer"
+        ]);
+
         $nombre = $request->input('nombre');
         $apellidos = $request->input('apellidos');
         $sexo = $request->input('sexo');
         
         $alumno = ['nombre' => $nombre, 'apellidos' => $apellidos, 'sexo' => $sexo];
-        
+
         $request->session()->push('lista.alumnos', $alumno);
         
         return back()->with(['data' => $request->all()]);
@@ -50,35 +81,6 @@ class PruebaController extends Controller
         session()->put('lista.alumnos', $obj);
 
         return back()->with(['data' => $request->all()]);
-    }
-    
-    public function index() {
-        $data = array([
-            'nombre' => 'Roberto',
-            'apellidos' => 'Esqueda',
-            'sexo' => 'M',
-            'edad' => 19
-        ],
-        [
-            'nombre' => 'Andrés',
-            'apellidos' => 'Estrada',
-            'sexo' => 'M',
-            'edad' => 20
-        ],
-        [
-            'nombre' => 'Eliud',
-            'apellidos' => 'Loza',
-            'sexo' => 'M',
-            'edad' => 19
-        ],
-        [
-            'nombre' => 'Sara',
-            'apellidos' => 'Lopez',
-            'sexo' => 'F',
-            'edad' => 20
-        ]);
-
-        return view('folder.test', ['data' => $data]);
     }
 
     public function prueba(Request $request, int $edad = null, string $sexo = "Masculino", string $nombre = "Juan") {

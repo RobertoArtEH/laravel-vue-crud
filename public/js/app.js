@@ -2030,11 +2030,16 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    cleanInput: function cleanInput() {
+      this.alumno.nombre = '';
+      this.alumno.apellidos = '';
+      this.alumno.sexo = '';
+    },
     saveData: function saveData() {
       var self = this;
       axios.post('/data', this.alumno).then(function (response) {
-        console.log(response);
         self.list.push(response.data);
+        self.cleanInput();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2045,7 +2050,6 @@ __webpack_require__.r(__webpack_exports__);
       this.alumno.apellidos = el.apellidos;
       this.alumno.sexo = el.sexo;
       this.isEdit = true;
-      console.log(this.list);
     },
     updateTable: function updateTable() {
       var id = this.alumno.id;
@@ -2056,9 +2060,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     deleteData: function deleteData(el, idx) {
       this.list.splice(idx, 1);
-      this.alumno.nombre = '';
-      this.alumno.apellidos = '';
-      this.alumno.sexo = '';
+      this.cleanInput();
       this.isEdit = false;
     },
     updateData: function updateData() {
@@ -2067,9 +2069,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("/data", {
         alumno: this.alumno
       }).then(function (response) {
-        _this.alumno.nombre = '';
-        _this.alumno.apellidos = '';
-        _this.alumno.sexo = '';
+        _this.cleanInput();
+
         _this.isEdit = false;
         console.log(response);
       })["catch"](function (error) {

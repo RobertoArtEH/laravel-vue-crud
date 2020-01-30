@@ -23,7 +23,17 @@
 // ]);
 
 Route::get('/', 'Prueba\PruebaController@index');
+
 Route::post('/data', 'Prueba\PruebaController@data');
+Route::put('/dataUpdate/{id}', 'Prueba\PruebaController@dataUpdate')->name('dataUpdate');
+Route::delete('/dataDelete/{id}', 'Prueba\PruebaController@dataDelete')->name('dataDelete');
+
+// Sessions
 Route::post('/add', 'Prueba\PruebaController@add');
 Route::delete('/delete/{id}', 'Prueba\PruebaController@delete')->name('delete');
 Route::put('/update/{id}', 'Prueba\PruebaController@update')->name('update');
+
+// Auth
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

@@ -18,8 +18,12 @@
                                         <input v-model="alumno.apellidos" type="text" name="apellidos" class="form-control">
                                     </div>
                                     <div class="form-group">
-                                        <label for="nombre">Sexo (M/F)</label>
+                                        <label for="sexo">Sexo (M/F)</label>
                                         <input v-model="alumno.sexo" type="text" name="sexo" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="edad">Edad</label>
+                                        <input v-model="alumno.edad" type="number" name="edad" class="form-control">
                                     </div>
                                     <input 
                                         type="button" 
@@ -46,10 +50,10 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="(el, idx) in list" :key="el.id">
-                                            <th v-on:click="editData(el, idx)" :class="el.sexo">
+                                            <th v-on:click="editData(el, el.id)" :class="el.sexo">
                                                 {{ el.nombre }}
                                             </th>
-                                            <th v-on:click="editData(el, idx)" :class="el.sexo">
+                                            <th v-on:click="editData(el, el.id)" :class="el.sexo">
                                                 {{ el.apellidos }}
                                             </th>
                                             <th v-on:click="deleteData(el, idx)" :class="el.sexo">
@@ -92,7 +96,8 @@
                     id: null,
                     nombre: null,
                     apellidos: null,
-                    sexo: null
+                    sexo: null,
+                    edad: null
                 }
             }
         },
@@ -101,12 +106,14 @@
                 this.alumno.nombre = '';
                 this.alumno.apellidos = '';
                 this.alumno.sexo = '';
+                this.alumno.edad = '';
             },
             saveData: function() {
                 let self = this;
 
                 axios.post('/data', this.alumno)
                     .then(response => {
+                        console.log(response);
                         self.list.push(response.data);
                         self.cleanInput();
                     })
@@ -119,28 +126,44 @@
                 this.alumno.nombre = el.nombre;
                 this.alumno.apellidos = el.apellidos;
                 this.alumno.sexo = el.sexo;
+                this.alumno.edad = el.edad;
                 this.isEdit = true;
             },
             updateTable: function() {
                 let id = this.alumno.id;
 
-                this.list[id].nombre = this.alumno.nombre;
-                this.list[id].apellidos = this.alumno.apellidos;
-                this.list[id].sexo = this.alumno.sexo;
+                for (let i = 0; i < this.list.length; i++) {
+                    console.log(this.list[i]);
+                    console.log(this.list[i].id == this.alumno.id);
 
-                this.updateData()
+                    if (this.list[i].id == this.alumno.id) {
+                        this.list[i].nombre = this.alumno.nombre;
+                        this.list[i].apellidos = this.alumno.apellidos;
+                        this.list[i].sexo = this.alumno.sexo;
+                        this.list[i].edad = this.alumno.edad;
+        
+                        this.updateData(id)
+                    }
+                }
             },
             deleteData: function(el, idx) {
-                this.list.splice(idx, 1);
-                this.cleanInput();
-                this.isEdit = false;
-            },
-            updateData: function() {
-                axios.post(`/data`, { alumno: this.alumno})
+                axios.delete(`/dataDelete/${el.id}`, this.alumno)
                     .then(response=> {
+                        console.log(response);
+                        this.list.splice(idx, 1);
                         this.cleanInput();
                         this.isEdit = false;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            },
+            updateData: function(idx) {
+                axios.put(`/dataUpdate/${idx}`, this.alumno)
+                    .then(response=> {
                         console.log(response);
+                        this.cleanInput();
+                        this.isEdit = false;
                     })
                     .catch(error => {
                         console.log(error);

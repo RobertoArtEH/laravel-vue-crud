@@ -3,31 +3,35 @@
 namespace App\Http\Controllers\Prueba;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 
 class PruebaController extends Controller
 {
+    public function createToken() {
+        return 'a';
+    }
+
     public function index() {
         $data = \App\Models\Person::all()->toArray();
 
         return view('folder.test', ['data' => $data]);
     }
 
-    public function data(Request $request) {
-        $request->validate([
-            "nombre"=>"required|string",
-            "apellidos"=>"required|string",
-            "sexo"=>"required|string",
-            "edad"=>"required|integer"
-        ]);
+    public function data(UserRequest $request) {
+        $validated = $request->validated();
 
         $person = new \App\Models\Person();
         $person->nombre = $request->nombre;
         $person->apellidos = $request->apellidos;
         $person->sexo = $request->sexo;
-        $person->edad = 19;
+        $person->edad = $request->edad;
 
-        // if($request->ajax())
+        if($request->ajax()) {
+            $person->save();
+
+            return response()->json($request->all());
+        }
 
         if($person->save())
             return back();
@@ -35,6 +39,53 @@ class PruebaController extends Controller
         return response()->json(null, 422);
     }
 
+    public function dataUpdate(UserRequest $request, $id) {
+        $validated = $request->validated();
+        
+        if($request->ajax()){
+            $person = \App\Models\Person::findOrFail($id);
+            $person->nombre = $request->nombre;
+            $person->apellidos = $request->apellidos;
+            $person->sexo = $request->sexo;
+            $person->edad = $request->edad;
+            $person->save();
+
+            return response()->json($request->all());
+        }
+        
+        $person = \App\Models\Person::findOrFail($id);
+        $person->nombre = $request->nombre;
+        $person->apellidos = $request->apellidos;
+        $person->sexo = $request->sexo;
+        $person->edad = $request->edad;
+
+        if($person->save()) {
+            return back();
+        }
+
+        return response()->json(null, 422);
+    }
+
+    public function dataDelete(Request $request, $id) {
+        if($request->ajax()){
+            $person = \App\Models\Person::findOrFail($id);
+            $person->forceDelete();
+
+            return response()->json($request->all());
+        }
+        
+        $person = \App\Models\Person::findOrFail($id);
+
+        if($person->forceDelete()) {
+            $data = \App\Models\Person::all()->toArray();
+
+            return back()->with(['data' => $data]);
+        }
+
+        return response()->json(null, 422);
+    }
+
+    // Métodos con Sessions
     public function add(Request $request) {
         $request->validate([
             "nombre"=>"required|string",

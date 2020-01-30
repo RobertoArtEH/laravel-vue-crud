@@ -2012,6 +2012,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['data'],
   mounted: function mounted() {
@@ -2025,7 +2029,8 @@ __webpack_require__.r(__webpack_exports__);
         id: null,
         nombre: null,
         apellidos: null,
-        sexo: null
+        sexo: null,
+        edad: null
       }
     };
   },
@@ -2034,10 +2039,12 @@ __webpack_require__.r(__webpack_exports__);
       this.alumno.nombre = '';
       this.alumno.apellidos = '';
       this.alumno.sexo = '';
+      this.alumno.edad = '';
     },
     saveData: function saveData() {
       var self = this;
       axios.post('/data', this.alumno).then(function (response) {
+        console.log(response);
         self.list.push(response.data);
         self.cleanInput();
       })["catch"](function (error) {
@@ -2049,30 +2056,49 @@ __webpack_require__.r(__webpack_exports__);
       this.alumno.nombre = el.nombre;
       this.alumno.apellidos = el.apellidos;
       this.alumno.sexo = el.sexo;
+      this.alumno.edad = el.edad;
       this.isEdit = true;
     },
     updateTable: function updateTable() {
       var id = this.alumno.id;
-      this.list[id].nombre = this.alumno.nombre;
-      this.list[id].apellidos = this.alumno.apellidos;
-      this.list[id].sexo = this.alumno.sexo;
-      this.updateData();
+
+      for (var i = 0; i < this.list.length; i++) {
+        console.log(this.list[i]);
+        console.log(this.list[i].id == this.alumno.id);
+
+        if (this.list[i].id == this.alumno.id) {
+          this.list[i].nombre = this.alumno.nombre;
+          this.list[i].apellidos = this.alumno.apellidos;
+          this.list[i].sexo = this.alumno.sexo;
+          this.list[i].edad = this.alumno.edad;
+          this.updateData(id);
+        }
+      }
     },
     deleteData: function deleteData(el, idx) {
-      this.list.splice(idx, 1);
-      this.cleanInput();
-      this.isEdit = false;
-    },
-    updateData: function updateData() {
       var _this = this;
 
-      axios.post("/data", {
-        alumno: this.alumno
-      }).then(function (response) {
+      axios["delete"]("/dataDelete/".concat(el.id), this.alumno).then(function (response) {
+        console.log(response);
+
+        _this.list.splice(idx, 1);
+
         _this.cleanInput();
 
         _this.isEdit = false;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    updateData: function updateData(idx) {
+      var _this2 = this;
+
+      axios.put("/dataUpdate/".concat(idx), this.alumno).then(function (response) {
         console.log(response);
+
+        _this2.cleanInput();
+
+        _this2.isEdit = false;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -38166,7 +38192,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group" }, [
-                    _c("label", { attrs: { for: "nombre" } }, [
+                    _c("label", { attrs: { for: "sexo" } }, [
                       _vm._v("Sexo (M/F)")
                     ]),
                     _vm._v(" "),
@@ -38188,6 +38214,32 @@ var render = function() {
                             return
                           }
                           _vm.$set(_vm.alumno, "sexo", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", { attrs: { for: "edad" } }, [_vm._v("Edad")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.alumno.edad,
+                          expression: "alumno.edad"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "number", name: "edad" },
+                      domProps: { value: _vm.alumno.edad },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.alumno, "edad", $event.target.value)
                         }
                       }
                     })
@@ -38221,7 +38273,7 @@ var render = function() {
                             class: el.sexo,
                             on: {
                               click: function($event) {
-                                return _vm.editData(el, idx)
+                                return _vm.editData(el, el.id)
                               }
                             }
                           },
@@ -38240,7 +38292,7 @@ var render = function() {
                             class: el.sexo,
                             on: {
                               click: function($event) {
-                                return _vm.editData(el, idx)
+                                return _vm.editData(el, el.id)
                               }
                             }
                           },

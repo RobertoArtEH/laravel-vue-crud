@@ -8,10 +8,6 @@ use App\Http\Controllers\Controller;
 
 class PruebaController extends Controller
 {
-    public function createToken() {
-        return 'a';
-    }
-
     public function index() {
         $data = \App\Models\Person::all()->toArray();
 
@@ -28,13 +24,22 @@ class PruebaController extends Controller
         $person->edad = $request->edad;
 
         if($request->ajax()) {
+            try {
+                $person->save();
+    
+                return response()->json($person);
+            } catch(\Exception $e) {
+                return response()->json($e);
+            }
+        }
+        
+        try {
             $person->save();
 
-            return response()->json($request->all());
-        }
-
-        if($person->save())
             return back();
+        } catch(\Exception $e) {
+            return $e;
+        }
 
         return response()->json(null, 422);
     }
@@ -42,44 +47,53 @@ class PruebaController extends Controller
     public function dataUpdate(UserRequest $request, $id) {
         $validated = $request->validated();
         
-        if($request->ajax()){
-            $person = \App\Models\Person::findOrFail($id);
-            $person->nombre = $request->nombre;
-            $person->apellidos = $request->apellidos;
-            $person->sexo = $request->sexo;
-            $person->edad = $request->edad;
-            $person->save();
-
-            return response()->json($request->all());
-        }
-        
         $person = \App\Models\Person::findOrFail($id);
         $person->nombre = $request->nombre;
         $person->apellidos = $request->apellidos;
         $person->sexo = $request->sexo;
         $person->edad = $request->edad;
 
-        if($person->save()) {
+        if($request->ajax()){
+
+            try {
+                $person->save();
+    
+                return response()->json($person);
+            } catch(\Exception $e) {
+                return response()->json($e);
+            }
+        }
+        
+        try {
+            $person->save();
+
             return back();
+        } catch(\Exception $e) {
+            return $e;
         }
 
         return response()->json(null, 422);
     }
 
     public function dataDelete(Request $request, $id) {
+        $person = \App\Models\Person::findOrFail($id);
+        
         if($request->ajax()){
-            $person = \App\Models\Person::findOrFail($id);
+            try {
+                $person->forceDelete();
+    
+                return response()->json($person);
+            } catch(\Exception $e) {
+                return response()->json($e);
+            }
+        }
+
+        try {
             $person->forceDelete();
 
-            return response()->json($request->all());
-        }
-        
-        $person = \App\Models\Person::findOrFail($id);
-
-        if($person->forceDelete()) {
-            $data = \App\Models\Person::all()->toArray();
-
-            return back()->with(['data' => $data]);
+            return back();
+        } catch(\Exception $e) {
+            return $e;
         }
 
         return response()->json(null, 422);
